@@ -1,3 +1,6 @@
+#http://www.cnblogs.com/Undo-self-blog/p/8439149.html
+#不知道有什么用。。
+
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
@@ -73,3 +76,35 @@ CLAHE
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
 cl1 = clahe.apply(img)
 cv2.imwrite('a2.jpg',cl1)
+
+
+
+
+'''
+2D 直方图
+
+目标
+　　本节我们会学习如何绘制 2D 直方图，我们会在下一节中使用到它。
+22.3.1 介绍
+　　在前面的部分我们介绍了如何绘制一维直方图，之所以称为一维，是因为我们只考虑了图像的一个特征：灰度值。
+  但是在 2D 直方图中我们就要考虑两个图像特征。对于彩色图像的直方图通常情况下我们需要考虑每个的颜色（Hue）和
+  饱和度（Saturation）。根据这两个特征绘制 2D 直方图。
+OpenCV 的官方文档中包含一个创建彩色直方图的例子。本节就是要和大家一起来学习如何绘制颜色直方图，
+这会对我们下一节学习直方图投影有所帮助。
+
+
+22.3.2 OpenCV 中的 2D 直方图
+　　使用函数 cv2.calcHist() 来计算直方图既简单又方便。如果要绘制颜色直方图的话，
+  我们首先需要将图像的颜色空间从 BGR 转换到 HSV。（记住，计算一维直方图，要从 BGR 转换到 HSV）。
+  计算 2D 直方图，函数的参数要做如下修改：
+　　• channels=[0 ，1] 因为我们需要同时处理 H 和 S 两个通道。
+　　• bins=[180 ，256]H 通道为 180，S 通道为 256。
+　　• range=[0 ，180 ，0 ，256]H 的取值范围在 0 到 180，S 的取值范围在 0 到 256。
+代码如下：
+'''
+img = cv2.imread('3.jpg')
+hsv = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
+
+hist =cv2.calcHist([hsv], [0, 1], None, [180, 256],[0, 180, 0, 256])
+plt.imshow(hist,interpolation = 'nearest')
+plt.show()
