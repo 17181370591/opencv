@@ -38,6 +38,11 @@ cv2.imwrite('a.jpg',img)
 
 
 #opencv的直方图均衡化
+'''
+OpenCV 中的直方图均衡化函数为 cv2.equalizeHist()。
+这个函数的输入图片仅仅是一副灰度图像，输出结果是直方图均衡化之后的图像。
+下边的代码还是对上边的那幅图像进行直方图均衡化：
+'''
 img = cv2.imread('1.jpg',0)
 equ = cv2.equalizeHist(img)
 #res = np.hstack((img,equ)) #stacking images side-by-side     
