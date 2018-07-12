@@ -92,5 +92,6 @@ for i in corners:
     x,y = i.ravel()
     cv2.circle(img,(x,y),3,255,-1)
 
+cv2.imwrite('a3.jpg',img)
 plt.imshow(img)
 plt.show()
