@@ -83,5 +83,5 @@ knn.train(trainData, cv2.ml.ROW_SAMPLE, responses)
 ret, result, neighbours, dist = knn.findNearest(testData, k=5)
 
 correct = np.count_nonzero(result == labels)
-accuracy = correct*100.0/10000
+accuracy = correct*100.0/10000 
 print (accuracy)
