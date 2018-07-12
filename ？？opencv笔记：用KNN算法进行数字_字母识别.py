@@ -48,3 +48,40 @@ correct = np.count_nonzero(matches)                                 #正确识�
 #correct =np.argwhere(matches==True).shape[0]
 accuracy = correct*100.0/result.size
 print (accuracy)
+
+
+==========================================================================================
+
+'''
+英文字母的 OCR
+　　接下来我们来做英文字母的 OCR。和上面做法一样，但是数据和特征集有一些不同。
+  现在 OpenCV 给出的不是图片了，而是一个数据文件（/samples/cpp/letter-recognition.data）。
+  如果打开它的话，你会发现它有 20000 行，第一样看上去就像是垃圾。实际上每一行的第一列是我们的一个字母标记。
+  接下来的 16 个数字是它的不同特征。这些特征来源于UCI Machine LearningRepository。
+有 20000 个样本可以使用，我们取前 10000 个作为训练样本，剩下的10000 个作为测试样本。
+我们应在先把字母表转换成 asc 码，因为我们不正直接处理字母。
+'''
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load the data, converters convert the letter to a number。读取字母数据
+data= np.loadtxt('letter-recognition.data', dtype= 'float32', delimiter = ',',
+                    converters= {0: lambda ch: ord(ch)-ord('A')})
+
+# split the data to two, 10000 each for train and test
+train, test = np.vsplit(data,2)               #竖直平分，前半训练后半测试
+
+# split trainData and testData to features and responses
+responses, trainData = np.hsplit(train,[1])       #第一列是结果，后面列是特征值
+labels, testData = np.hsplit(test,[1])
+
+# Initiate the kNN, classify, measure accuracy.
+knn = cv2.ml.KNearest_create()
+knn.train(trainData, cv2.ml.ROW_SAMPLE, responses)
+ret, result, neighbours, dist = knn.findNearest(testData, k=5)
+
+correct = np.count_nonzero(result == labels)
+accuracy = correct*100.0/10000
+print (accuracy)
