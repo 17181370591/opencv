@@ -36,7 +36,7 @@ ma=cv2.add(ma1,ma)                                          #mask部分显示原
 cv2.imshow('',ma)
 k=cv2.waitKey(5)&0xFF
 
-
+'''
 #x需要三层括号，相当于一个像素点。因为img的shape是a*b*3的
 min1=min(r,g,b)
 max1=max(r,g,b)
@@ -49,3 +49,36 @@ y=cv2.cvtColor(x,cv2.COLOR_BGR2HSV)
 紫色255,0，255对应150,255,255
 青色255,255,0对应90,255,255
 hsv的s表示饱和度，min1越大饱和度越低，算法应该是(max1-min1)/max1*255，v表示明度，max1越打明度越大
+'''
+
+
+============================================================================
+
+#用滚动条实时展示inRange效果
+#滚动条获取当前rgb值，加减de获取上限和下限，用位加法运算获取图片
+
+import numpy as np
+import cv2,time
+from matplotlib import pyplot as plt
+
+def nn(x):pass
+im1=cv2.imread('p.jpg')
+
+de=60                                                           
+cv2.namedWindow('a',0)
+cv2.resizeWindow('a',800,600)
+cv2.createTrackbar('r','a',0,255,nn)
+cv2.createTrackbar('g','a',0,255,nn)
+cv2.createTrackbar('b','a',0,255,nn)
+while 1:
+    r=cv2.getTrackbarPos('r','a')
+    g=cv2.getTrackbarPos('g','a')
+    b=cv2.getTrackbarPos('b','a')
+    m=np.uint8([r,g,b])
+    #print(m)
+    m1,m2=m-de,m+de
+    mask=cv2.inRange(im1,m1,m2)
+    im=cv2.bitwise_and(im1,im1,mask=mask)
+    cv2.imshow('a',im)
+    cv2.waitKey(111)
+
