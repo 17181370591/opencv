@@ -51,3 +51,39 @@ while 1:
         break
 
 cv2.destroyAllWindows()
+
+#=======================================================================
+#test2
+
+import numpy as np
+import cv2,time
+from matplotlib import pyplot as plt
+
+im1=cv2.imread('1.jpg')
+cv2.namedWindow('a',0)
+cv2.resizeWindow('a',800,600)
+
+def nn(x):
+    pass
+
+max_=100
+cv2.createTrackbar('r','a',0,max_,nn)
+cv2.createTrackbar('g','a',0,max_,nn)
+cv2.createTrackbar('b','a',0,max_,nn)
+
+
+
+while 1:
+    r=cv2.getTrackbarPos('r','a')
+    g=cv2.getTrackbarPos('g','a')
+    b=cv2.getTrackbarPos('b','a')
+    L=(r/100,g/100,b/100)
+    im=im1.copy()
+    for i in range(3):
+      im[:,:,i]=np.uint8(im1[:,:,i]*L[i])
+
+    cv2.imshow('a',im)
+    cv2.waitKey(20)&0xFF
+
+
+
