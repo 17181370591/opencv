@@ -63,20 +63,25 @@ from matplotlib import pyplot as plt
 
 def nn(x):pass
 im1=cv2.imread('p.jpg')
-
-de=60                                                           
+                                                         
 cv2.namedWindow('a',0)
 cv2.resizeWindow('a',800,600)
 cv2.createTrackbar('r','a',0,255,nn)
 cv2.createTrackbar('g','a',0,255,nn)
 cv2.createTrackbar('b','a',0,255,nn)
+cv2.createTrackbar('de','a',0,255,nn)
+
 while 1:
     r=cv2.getTrackbarPos('r','a')
     g=cv2.getTrackbarPos('g','a')
     b=cv2.getTrackbarPos('b','a')
-    m=np.uint8([r,g,b])
+    de=cv2.getTrackbarPos('de','a')
+    
+    #没有使用uint8，因为加减de时可能溢出，现在这里出现溢出似乎也没关系，因为只是上下界
+    m=np.array([r,g,b])                         
     #print(m)
     m1,m2=m-de,m+de
+    print(m1,m2)
     mask=cv2.inRange(im1,m1,m2)
     im=cv2.bitwise_and(im1,im1,mask=mask)
     cv2.imshow('a',im)
