@@ -95,9 +95,9 @@ print(ellipse1)
 
 
 
-#下面这个方法可以获取边界的排序后的numpy.array对象
+#下面这个方法可以制作一个轮廓对应的mask
 #掩模和像素点.有时我们需要构成对象的所有像素点，我们可以这样做：
-mask = np.zeros(img1.shape[:2],np.uint8)
+mask = np.zeros(img1.shape[:2],np.uint8)                #[:2]是因为制作mask只需要用灰度图
 # 最后一个参数一定是-1, 绘制填充的的轮廓,不然会表示轮廓的宽度而不是填充
 cv2.drawContours(mask,[contours[xx][:,:,:2]],-1,255,-1)
 #下面能得到像素点的列表，而pixelpoints依旧是numpy.array对象
