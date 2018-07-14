@@ -34,6 +34,8 @@ cnt = contours[x]                           #获取点最多的轮廓
 M = cv2.moments(cnt)                           #获取该轮廓的一些信息的字典
 cx = int(M['m10']/M['m00'])
 cy = int(M['m01']/M['m00'])                 #重心的坐标
+
+#轮廓的面积可以使用函数 cv2.contourArea() 计算得到，也可以使用矩（0 阶矩），M['m00']。
 area = cv2.contourArea(cnt)                  #轮廓面积
 perimeter = cv2.arcLength(cnt,True)          #轮廓周长
 
