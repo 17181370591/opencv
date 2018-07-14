@@ -62,13 +62,13 @@ print(cv2.isContourConvex(contours[xx]))
 sh(img3,'pu tong bian jie')
 
 img1 = cv2.imread('4.jpg')                                      #绘制包围凸包的最小不旋转矩形
-x,y,w,h = cv2.boundingRect(hull)        #contours[xx]
+x,y,w,h = cv2.boundingRect(hull)               #contours[xx]    #获取边界矩形
 cv2.rectangle(img1,(x,y),(x+w,y+h),(0,255,0),5)
 print(x,y,w,h)
 sh(img1,'ju xing bian jie')
 
 img1 = cv2.imread('4.jpg')                                      #绘制包围凸包的最小旋转矩形
-rect = cv2.minAreaRect(hull)        #contours[xx]              #获取矩形的中点，宽高，选择角度（逆时针为负数）
+rect = cv2.minAreaRect(hull)        #contours[xx]     #获取选择边界矩形的中点，宽高，选择角度（逆时针为负数）
 print('rect==',rect)
 box = cv2.boxPoints(rect)                                       #获取矩形的四个顶点
 print('box1==',box)
