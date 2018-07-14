@@ -51,4 +51,7 @@ cv2.namedWindow('a',0)
 cv2.resizeWindow('a',500,500)
 cv2.imshow('a',img3)
 #凸性检测:函数 cv2.isContourConvex() 可以可以用来检测一个曲线是不是凸的。它只能返回 True 或 False。
+b= cv2.convexHull(contours[0],returnPoints=False)           #返回的是凸包上的点在轮廓上的索引
+print(np.where(contours[0][b.flatten()]!=hull))             #可以发现确实是索引，这里返回空值
+
 k = cv2.isContourConvex(cnt)
