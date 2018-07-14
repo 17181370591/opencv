@@ -8,7 +8,6 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 img = cv2.imread('2.jpg',0)
-a,b=100,200
 cv2.namedWindow('a')
 def nothing(x):
     pass
@@ -23,4 +22,4 @@ while 1:
     print(a,b)
     edges = cv2.Canny(img,a,b)
     cv2.imshow('a',edges)
-    cv2.waitKey(1000)
+    cv2.waitKey(33)
