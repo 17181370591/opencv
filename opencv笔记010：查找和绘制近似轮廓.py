@@ -37,6 +37,9 @@ cy = int(M['m01']/M['m00'])                 #重心的坐标
 
 #轮廓的面积可以使用函数 cv2.contourArea() 计算得到，也可以使用矩（0 阶矩），M['m00']。
 area = cv2.contourArea(cnt)                  #轮廓面积
+
+#轮廓周长也被称为弧长。可以使用函数 cv2.arcLength() 计算得到。
+#这个函数的第二参数可以用来指定对象的形状是闭合的（True），还是打开的（一条曲线）。
 perimeter = cv2.arcLength(cnt,True)          #轮廓周长
 
 
