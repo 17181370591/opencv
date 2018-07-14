@@ -39,8 +39,8 @@ sobelx=cv2.Sobel(img,cv2.CV_64F,1,0,ksize=5)
 # 参数 0,1 为只在 y 方向求一阶导数，最大可以求 2 阶导数。
 sobely=cv2.Sobel(img,cv2.CV_64F,0,1,ksize=5)
 
-sox=cv2.Sobel(img,cv2.CV_64F,1,0,ksize=-1)
-soy=cv2.Sobel(img,cv2.CV_64F,0,1,ksize=-1)
+sox=cv2.Sobel(img,cv2.CV_64F,1,0,ksize=-1)                          #自己加的，可能不好
+soy=cv2.Sobel(img,cv2.CV_64F,0,1,ksize=-1)                          #自己加的，可能不好
 
 plt.subplot(2,3,1),plt.imshow(img,cmap = 'gray')
 plt.title('Original'), plt.xticks([]), plt.yticks([])
@@ -50,8 +50,8 @@ plt.subplot(2,3,3),plt.imshow(sobelx,cmap = 'gray')
 plt.title('Sobel X'), plt.xticks([]), plt.yticks([])
 plt.subplot(2,3,4),plt.imshow(sobely,cmap = 'gray')
 plt.title('Sobel Y'), plt.xticks([]), plt.yticks([])
-plt.subplot(2,3,5),plt.imshow(sox,cmap = 'gray')
-plt.title('Sxxxxx-1'), plt.xticks([]), plt.yticks([])
-plt.subplot(2,3,6),plt.imshow(soy,cmap = 'gray')
-plt.title('yyyyy-1'), plt.xticks([]), plt.yticks([])
+plt.subplot(2,3,5),plt.imshow(sox,cmap = 'gray')                          #自己加的，可能不好
+plt.title('Sxxxxx-1'), plt.xticks([]), plt.yticks([])                          #自己加的，可能不好
+plt.subplot(2,3,6),plt.imshow(soy,cmap = 'gray')                          #自己加的，可能不好
+plt.title('yyyyy-1'), plt.xticks([]), plt.yticks([])                          #自己加的，可能不好
 plt.show()
