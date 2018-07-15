@@ -17,7 +17,7 @@ OpenCV 提供了几种不同的比较方法（细节请看文档）。返回的�
 
 OpenCV 提供了 6 种计算两幅图像相似度的方法。
 差值平方和匹配 CV_TM_SQDIFF
-标准化差值平方和匹配 CV_TM_SQDIFF_NORMED
+标准化差值平方和匹配 CV_TM_SQDIFF_NORMED                         #这个应该是最好的，因为容易设置阈值
 相关匹配 CV_TM_CCORR
 标准相关匹配 CV_TM_CCORR_NORMED
 相关匹配 CV_TM_CCOEFF
