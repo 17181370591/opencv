@@ -77,6 +77,17 @@ clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
 cl1 = clahe.apply(img)
 cv2.imwrite('a2.jpg',cl1)
 
+'''
+#rgb图像split成单通道后，也可以用这个来改变每个通道的对比度，然后merge成rgb图像（自己想到的，似乎效果还可以）
+img = cv2.imread('1.jpg')
+r,g,b=cv2.split(img)
+
+clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+r2 = clahe.apply(r)
+g2 = clahe.apply(g)
+b2 = clahe.apply(b)
+img2=cv2.merge((r2,g2,b2))
+'''
 
 
 
