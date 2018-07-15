@@ -30,3 +30,24 @@ cv2.imwrite('res.jpg',res)
 # 显示图像
 cv2.imshow('1',res)
 cv2.waitKey(0)
+
+
+
+'''
+关于归一化：
+>>> a=np.array([[0,0],[1,2],[2,3]])
+>>> b=np.zeros_like(a)
+>>> c=cv2.normalize(a,b,0,255,cv2.NORM_MINMAX)
+>>> a
+array([[0, 0],
+       [1, 2],
+       [2, 3]])
+>>> b
+array([[  0,   0],
+       [ 85, 170],
+       [170, 255]])
+>>> c
+array([[  0,   0],
+       [ 85, 170],
+       [170, 255]])
+'''
