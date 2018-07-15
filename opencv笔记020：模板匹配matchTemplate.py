@@ -14,6 +14,14 @@ OpenCV 提供了几种不同的比较方法（细节请看文档）。返回的�
 第一个值为矩形左上角的点（位置），（w，h）为 moban 模板矩形的宽和高。这个矩形就是找到的模板区域了。
 注意：如果你使用的比较方法是 cv2.TM_SQDIFF，最小值对应的位置才是匹配的区域。
 我们看到 cv2.TM_CCORR 的效果不像我们想的那么好。
+
+OpenCV 提供了 6 种计算两幅图像相似度的方法。
+差值平方和匹配 CV_TM_SQDIFF
+标准化差值平方和匹配 CV_TM_SQDIFF_NORMED
+相关匹配 CV_TM_CCORR
+标准相关匹配 CV_TM_CCORR_NORMED
+相关匹配 CV_TM_CCOEFF
+标准相关匹配 CV_TM_CCOEFF_NORMED
 '''
 
 
