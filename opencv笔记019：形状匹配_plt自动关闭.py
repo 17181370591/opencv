@@ -21,7 +21,11 @@ pic='4.jpg'
 img2= cv2.imread(pic)
 img1 = cv2.imread(pic,0)
 a,img1=cv2.threshold(img1,111,255,0)
-x,cnt,x=cv2.findContours(img1,cv2.RETR_TREE,3)
+
+#下面用了CHAIN_APPROX_SIMPLE，这样最外面的轮廓（整个图片的轮廓）会只有4个点，
+#f才能找到内部点最多的轮廓（原图是手机轮廓，它是不规则的），如果换成CHAIN_APPROX_NONE会始终找到最外面的轮廓，
+#需要想其他办法或者手动设置cnt成手机的轮廓
+x,cnt,x=cv2.findContours(img1,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 x=f(cnt)
 img3=np.zeros_like(img1)
 z=cv2.drawContours(img3,cnt,x,255,-1)
