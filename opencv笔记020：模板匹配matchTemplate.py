@@ -36,8 +36,11 @@ for meth in methods:
     # 例如，我们可以在运行时生成一个包含 Python 代码的字符串，然后使用 exec 语句执行这些语句。
     #eval 语句用来计算存储在字符串中的有效 Python 表达式
     method = eval(meth)                                                      #遍历函数的方法！！！
+
     # Apply template Matching
-    res = cv2.matchTemplate(img,template,method)
+    #res就是模板匹配的结果，它的大小是（W-w+1，H-h+1），每个值是很大的float（可以是负数），
+    #其中正值最大的地方就是最像的地方           
+    res = cv2.matchTemplate(img,template,method)                  
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
     # 使用不同的比较方法，对结果的解释不同
     # If the method is TM_SQDIFF or TM_SQDIFF_NORMED, take minimum
