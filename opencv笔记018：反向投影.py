@@ -1,11 +1,20 @@
 #http://www.cnblogs.com/Undo-self-blog/p/8439149.html
-#看不懂，先占坑跳过
+#在target里面找roi相似的部分，这里roi直接从target里取一部分。
+#先将这两个图hsv化，对roi求直方图的目的是calcBackProject需要这个参数，
+#roihist是roi的直方图，然后归一化并赋值给roilist，
+#灰度图dst2就是反向投影的结果（反向投影到这一步就完了，图片白色部分表示比较像roi）。
+#用2d卷积成dst1是为了填充dst2，也可以用闭运算填充成dst1，
+#填充后转二值图，再转rgb图后与原图位并运算
+
 
 import cv2
 import numpy as np
-roi = cv2.imread('tar.jpg')
+from matplotlib import pyplot as plt
+
+
+target = cv2.imread('o.jpg')
+roi=target[30:50,240:260]
 hsv = cv2.cvtColor(roi,cv2.COLOR_BGR2HSV)
-target = cv2.imread('roi.jpg')
 hsvt = cv2.cvtColor(target,cv2.COLOR_BGR2HSV)
 # calculating object histogram
 roihist = cv2.calcHist([hsv],[0, 1], None, [180, 256], [0, 180, 0, 256] )
@@ -14,22 +23,41 @@ roihist = cv2.calcHist([hsv],[0, 1], None, [180, 256], [0, 180, 0, 256] )
 #cv2.NORM_MINMAX 对数组的所有值进行转化，使它们线性映射到最小值和最大值之间
 # 归一化之后的直方图便于显示，归一化之后就成了 0 到 255 之间的数了。
 cv2.normalize(roihist,roihist,0,255,cv2.NORM_MINMAX)
-dst = cv2.calcBackProject([hsvt],[0,1],roihist,[0,180,0,256],1)
+dst2 = cv2.calcBackProject([hsvt],[0,1],roihist,[0,180,0,256],1)
+
+
+
 # Now convolute with circular disc
 # 此处卷积可以把分散的点连在一起
-disc = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5,5))
-dst=cv2.filter2D(dst,-1,disc)
+x=7
+disc = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(x,x))     #使用椭圆核心
+dst=cv2.filter2D(dst2,-1,disc)                                #用2d卷积填充
 # threshold and binary AND
-ret,thresh = cv2.threshold(dst,50,255,0)
+ret,thresh = cv2.threshold(dst,50,255,0)                      #灰度图转二值图（二值图是灰度图的一种）
 # 别忘了是三通道图像，因此这里使用 merge 变成 3 通道
-thresh = cv2.merge((thresh,thresh,thresh))
-# 按位操作
+thresh = cv2.merge((thresh,thresh,thresh))                    #灰度图进行位并运算转换成rgb图      
 res = cv2.bitwise_and(target,thresh)
-res = np.hstack((target,thresh,res))
-cv2.imwrite('res.jpg',res)
-# 显示图像
-cv2.imshow('1',res)
-cv2.waitKey(0)
+
+
+ke=np.ones((x,x))                                              #和上一段作用一样，用来测试比原酸填充的效果
+dst1=cv2.morphologyEx(dst2,cv2.MORPH_CLOSE,ke)                 #用闭运算填充
+ret,dst1 = cv2.threshold(dst1,50,255,0)   
+thresh1 = cv2.merge((dst1,dst1,dst1))                          #填充完是灰度图，要进行位并运算要转换成rgb图
+res1 = cv2.bitwise_and(target,thresh1)
+
+
+       
+plt.subplot(2,2,1)
+plt.imshow(target)
+plt.subplot(2,2,2)
+plt.imshow(thresh)
+plt.subplot(2,2,3)
+plt.imshow(res)
+plt.subplot(2,2,4)
+plt.imshow(res1)
+plt.show()
+
+
 
 
 
