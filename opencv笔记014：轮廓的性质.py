@@ -106,12 +106,13 @@ pixelpoints = np.transpose(np.nonzero(mask))
 
 '''
 最大值和最小值及它们的位置，我们可以使用掩模图像得到这些参数。
-应该很重要，但是运行失败找不到原因
-img1 = cv2.imread('4.jpg')
+找出来的点，发现顺序和位置都有问题，原因不明
+'''
+img1 = cv2.imread('4.jpg',0)
 mask = np.zeros(img1.shape,np.uint8)
 a=cv2.drawContours(mask,[contours[xx]],-1,(255,255,255),-1)
 min_val, max_val, min_loc, max_loc=cv2.minMaxLoc(img1,mask = mask)
-'''
+
 
 
 
