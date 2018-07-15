@@ -107,6 +107,7 @@ pixelpoints = np.transpose(np.nonzero(mask))
 '''
 最大值和最小值及它们的位置，我们可以使用掩模图像得到这些参数。
 这个方法寻找img1的mask范围里，灰度值最小和最大的点灰度值和坐标。。。
+#所以img1一定要是单通道图片（灰度图）
 '''
 img1 = cv2.imread('4.jpg',0)
 mask = np.zeros(img1.shape,np.uint8)
