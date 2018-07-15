@@ -52,6 +52,13 @@ plt.show()                                                  #为什么这个画�
 img = cv2.imread(pic,0)
 plt.hist(img.ravel(),256,[0,256])                           #直方图
 plt.show()
+'''
+img = cv2.imread(pic)
+plt.hist(img[:,:,0].ravel(),256,[0,256])
+plt.hist(img[:,:,1].ravel(),256,[0,256])
+plt.hist(img[:,:,2].ravel(),256,[0,256]) 
+plt.show()
+'''
 
 
 
