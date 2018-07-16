@@ -15,12 +15,10 @@ img = cv2.imread('2.jpg')
 gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 edges = cv2.Canny(gray,50,150,apertureSize = 3)                     #先用canny获取轮廓
 lines = cv2.HoughLines(edges,1,np.pi/180,222)
-lines=lines.reshape(-1,2)
-print(lines.shape)
 right=img.shape[1]
 
 for z in lines:
-    rho,theta=z
+    rho,theta=z[0]
     a = np.cos(theta)
     b = np.sin(theta)
 
@@ -43,3 +41,34 @@ for z in lines:
     '''
     
 cv2.imshow('houghlines3.jpg',img)
+
+
+
+'''
+Probabilistic Hough Transform
+从上边的过程我们可以发现：仅仅是一条直线都需要两个参数，这需要大量的计算。
+Probabilistic_Hough_Transform 是对霍夫变换的一种优化。
+它不会对每一个点都进行计算，而是从一幅图像中随机选取（是不是也可以使用图像金字塔呢？）一个点集进行计算，
+对于直线检测来说这已经足够了。但是使用这种变换我们必须要降低阈值（总的点数都少了，阈值肯定也要小呀！）。
+下图是对两种方法的对比。（Image Courtesy : Franck Bettinger’s home page）
+OpenCV 中使用的 Matas, J. ，Galambos, C. 和 Kittler, J.V. 提出的Progressive Probabilistic Hough 
+Transform。这个函数是 cv2.HoughLinesP()。它有两个参数。
+• minLineLength - 线的最短长度。比这个短的线都会被忽略。
+• MaxLineGap - 两条线段之间的最大间隔，如果小于此值，这两条直线就被看成是一条直线。
+更加给力的是，这个函数的返回值就是直线的起点和终点。而在前面的例子中，我们只得到了直线的参数，
+而且你必须要找到所有的直线。而在这里一切都很直接很简单。
+'''
+
+import cv2
+import numpy as np
+img = cv2.imread('2.jpg')
+gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+edges = cv2.Canny(gray,50,150,apertureSize = 3)
+cv2.imshow('',edges)
+minLineLength = 1000
+maxLineGap = 30
+lines = cv2.HoughLinesP(edges,1,np.pi/180,100,minLineLength,maxLineGap)
+for z in lines:
+    x1,y1,x2,y2=z[0]
+    cv2.line(img,(x1,y1),(x2,y2),(0,0,255),2)
+cv2.imshow('houghlines5.jpg',img)
