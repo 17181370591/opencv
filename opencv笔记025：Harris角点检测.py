@@ -19,15 +19,20 @@ img = cv2.imread(filename)
 #gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 gray=cv2.imread(filename,0)
 gray = np.float32(gray)
+# 输入图像必须是 float32 ，最后一个参数在 0.04 到 0.05 之间
 dst = cv2.cornerHarris(gray,2,3,0.04)
 
 #result is dilated for marking the corners, not important
+#膨胀可以让点变大，不重要
 dst = cv2.dilate(dst,None)
 
 # Threshold for an optimal value, it may vary depending on the image.
 img[dst>0.01*dst.max()]=[0,0,255]
 
 cv2.imshow('dst',img)
+
+
+
 
 #####################
 '''
@@ -61,6 +66,10 @@ img[res[:,1],res[:,0]]=[0,0,255]
 img[res[:,3],res[:,2]] = [0,255,0]
 cv2.imshow('a3',img)
 cv2.imwrite('a3.jpg',img)
+
+
+
+
 
 
 ########################
