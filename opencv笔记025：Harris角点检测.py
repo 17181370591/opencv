@@ -1,4 +1,5 @@
 #http://www.cnblogs.com/Undo-self-blog/p/8447728.html
+#似乎第三个方法goodFeaturesToTrack是最好的
 
 '''
 OpenCV 中的 Harris 角点检测
@@ -42,6 +43,11 @@ cv2.imshow('dst',img)
   绿色像素是修正后的像素。在使用这个函数是我们要定义一个迭代停止条件。当迭代次数达到或者精度条件满足后迭代就会停止。
   我们同样需要定义进行角点搜索的邻域大小。
 '''
+import cv2
+import numpy as np
+from matplotlib import pyplot as plt
+
+filename = '1.jpg'
 img = cv2.imread(filename)
 gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
@@ -74,7 +80,7 @@ cv2.imwrite('a3.jpg',img)
 
 ########################
 '''
- Shi-Tomasi 角点检测 & 适合于跟踪的图像特征
+ Shi-Tomasi 角点检测 & 适合于跟踪的图像特征goodFeaturesToTrack
 
 目标
 　本节我们将要学习：
@@ -89,6 +95,11 @@ OpenCV 提供了函数：cv2.goodFeaturesToTrack()。
 函数会采用角点质量最高的那个角点（排序后的第一个），然后将它附近（最小距离之内）的角点都删掉。
 按着这样的方式最后返回 N 个最佳角点。在下面的例子中，我们试着找出 125 个最佳角点：
 '''
+import cv2
+import numpy as np
+from matplotlib import pyplot as plt
+
+filename = '1.jpg'
 num=125
 img = cv2.imread(filename)
 gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
