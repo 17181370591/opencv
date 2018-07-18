@@ -1,0 +1,46 @@
+#http://blog.sina.com.cn/s/blog_74b409aa0102vqrg.html
+#这一部分没怎么看懂，使用书上的代码对视频进行测试效果较差
+
+
+import numpy as np
+import cv2,time
+
+
+#f函数参数是图片数组，返回标记人脸的图片数组。封装是把face_cascade和eye_cascade的获取过程也写进函数，
+#所以速度会很慢，实际使用时要分离！！！
+def f(img):
+    face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+    eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')    
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray,scaleFactor = 1.1,minNeighbors = 5,minSize = (5,5))
+    for (x,y,w,h) in faces:
+        img = cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
+        roi_gray = gray[y:y+h, x:x+w]
+        roi_color = img[y:y+h, x:x+w]
+        eyes = eye_cascade.detectMultiScale(roi_gray)
+        for (ex,ey,ew,eh) in eyes:
+            cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
+    return img
+    
+    
+cap = cv2.VideoCapture("2.mp4")
+
+while(1):
+    # get a frame
+    ret, frame = cap.read()
+    # show a frame
+    frame=f(frame)
+    cv2.imshow("capture", frame)
+    k=cv2.waitKey(10)
+    if k & 0xFF == ord('q'):
+        break
+    elif k & 0xFF == ord('c'):
+        cv2.imwrite('{}.jpg'.format(time.time()),frame)
+    
+
+# When everything done, release the capture
+cap.release()
+cv2.destroyAllWindows()
+
+
+
