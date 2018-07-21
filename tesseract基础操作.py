@@ -87,5 +87,6 @@ mftraining -F font_properties -U unicharset all.tr
 cntraining all.tr
 
 #把shapetable,normproto,pffmtable,inttemp四个文件前面加上all.，注意有个小数点
-然后cmd运行combine_tessdata all就会生成最终的traineddata文件，移动到tesseract的tessdata里即可
+然后cmd运行combine_tessdata all就会生成最终的traineddata文件，移动到tesseract的tessdata里即可。
+外面有所有文件的截图
 '''
