@@ -1,6 +1,8 @@
 '''
 最好成绩1w7左右，不小心退出了，上个版本貌似不到1k。
-暂时没怎么应对作弊检测，思路是通过自杀堆高平均值和故意偏移中点，待补全
+无法应对作弊检测，通过自杀堆高平均值和故意偏移中点都被查出。
+用其他作弊方法可以发现如果跳出的值低于自己的最高值，是不会进行作弊检测的。
+#抓包分析：https://zhuanlan.zhihu.com/p/32711402?utm_source=wechat_session&utm_medium=social
 思路是：
 
 1，事先做好棋子的模板：
@@ -54,12 +56,25 @@ adb shell input tap 500 1050        点击500，1050
 import os,math
 import time,cv2
 import numpy as np,random
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt,pytesseract
 
 
 path1=r'C:\Users\Administrator\Desktop\111'
 to=337
 
+
+def score(a):                               #获取当前分数
+    a=a[-70:]
+    #cv2.namedWindow('a',0)
+    #cv2.resizeWindow('a',1200,600)    
+    #cv2.imshow('a',a)
+    r= pytesseract.image_to_string(a,lang='all',config='-psm 7')
+    try:
+        return int(r)
+    except Exception:
+        return 0
+    
+   
 def getCannyNum(jpg='bug.jpg'):             #使用滚动条测试获取canny的两个参数
     img = cv2.imread(jpg,0)
     cv2.namedWindow('a')
@@ -103,16 +118,21 @@ def pull_screenshot():
     os.system('adb shell screencap -p /sdcard/autojump.png')            #1
     os.system('adb pull /sdcard/autojump.png {}'.format(os.getcwd()))            #2
     img1=cv2.imread('autojump.png')
-    img1=img1[300:1280,0:720]                               #注意保存的时候就已经进行过截取了
+    img1[1210:1280]=img1[130:200]                       #把分数部分移动到最下面
+    img1=img1[300:1280,0:720]                           #截取部分图即可
     cv2.imwrite('autojump.png',img1)
 
 
 
 #a,b分别是棋子到目标的横纵坐标的差值，z是长度，c是常数，将距离转换成时间
+#x用来随机改变跳跃时间，发现无效后暂时不改
 def sq(a,b,c=2.05):
     d=math.sqrt(a*a+b*b)
-    z=round(d*c)
-    return z
+    z=d*c
+    x=1
+    #x=round((random.random()-0.5)/5+1,4)
+    z=round(z*x)
+    return z,x
 
 
 
@@ -152,7 +172,7 @@ def get_pic(img,img0):
     up1=ds[np.argmin(ds[:,0])]
     left1=ds[np.argmin(ds[:,1])]
     right1=ds[np.argmax(ds[:,1])]
-    print(up1,left1,right1)
+    #print(up1,left1,right1)
     
     up=np.int16(np.average(ds[ds[:,0]==up1[0]+2],axis=0))
     if up[0]==0:
@@ -187,16 +207,33 @@ def delonpu(img,img0,onpu):
         res = cv2.matchTemplate(img0,onpu,cv2.TM_CCOEFF_NORMED)                  
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
         if max_val>0.7:
-            print('max_val=',max_val)
+            print('出现音符，当前max_val=',max_val)
             img[max_loc[1]:max_loc[1]+h,max_loc[0]:max_loc[0]+w]=img[max_loc[1]:max_loc[1]+h,0:w]
             img0[max_loc[1]:max_loc[1]+h,max_loc[0]:max_loc[0]+w]=img0[max_loc[1]:max_loc[1]+h,0:w]
         else:
             return
 
         
+def updown(x1=None,x2=None,t_=None):                        #跳跃
+    if not x1:
+        x1=random.randrange(100,600)
+    if not x2:
+        x2=random.randrange(800,1200)
+    x3=random.randrange(-5,5)+x1
+    x4=random.randrange(-5,5)+x2
+    #x1=x2=x3=x4=111
+    if not t_:
+        t_=random.randint(4,7)
+    
+    s= 'adb shell input swipe {} {} {} {} {}'.format(x1,x2,x3,x4,t_)
+    print(s)
+    os.system(s)
+        
+        
+        
 #进行跳跃和记录的主函数   
-def main():
-    golbal step                                #用来控制自杀时间，对付作弊检测，具体代码很简单没写进来
+def main(qq):
+    step=0                            
     temp1=np.zeros((980, 720, 3))
     temp2=np.zeros((to, 720, 3))
     temp3=np.zeros((980-to, 720, 3))
@@ -211,6 +248,8 @@ def main():
         #下面两种得到灰度图的方法，得到的图像信息居然不一样，上面这个信息更多
         img0=cv2.imread('autojump.png',0)           
         #img0=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+                
+        sco=score(img0)                                             #获取分数
         
         delonpu(img,img0,onpu)                      #替换音符1
         delonpu(img,img0,onpu1)                     #替换音符2
@@ -230,7 +269,7 @@ def main():
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
         if max_val>.9:
             print('游戏失败，即将重新开始')
-            return 0
+            return 0,1
         mx,my,top_left,bottom_right=get_chess(img,img0)
         d1,d2=top_left
         d3,d4=bottom_right
@@ -249,39 +288,61 @@ def main():
         #dst1和dst2会被保存成临时变量，在跳跃并截图后，供下次合成图片使用。
         dst1=np.repeat(dst.ravel(),3).reshape((to,720,3))                   
         dst2=np.repeat(img0[:980-to,:].ravel(),3).reshape((980-to,720,3))
-
-        print('棋子的坐标是{},{}'.format(mx,my),'目标的坐标是{},{}'.format(nx,ny))
+     
+        z,x=sq(mx-nx,my-ny)
         
-        z=sq(mx-nx,my-ny)
-        #向手机模拟点击加入随机变量，对付作弊认证
-        x1=random.randrange(400,500)
-        x2=random.randrange(400,500)
-        x3=x1+random.randrange(-100,100)
-        x4=x2+random.randrange(-100,100)
-        cmd = 'adb shell input swipe {} {} {} {} {}'.format(x1,x2,x3,x4,z)
-        os.system(cmd)
+        updown(t_=z)
+        step+=1
+        print('目标{}当前{}  ||'.format(qq,sco),
+              '{},{}==>{},{}  ||x={},z={},step={}'.format(mx,my,nx,ny,x,z,step))
         time.sleep(3)       #2.5秒肯定不够
+        
         temp1=img
         cv2.putText(dst1,r'{},{}/{},{}/{}'.format(mx,my,nx,ny,z),
                     (0,50), cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),2,cv2.LINE_AA)
         temp2=dst1
         temp3=dst2
-        step+=1
+        
+        a=random.randrange(1,9)
+        if a==1:                                    #模拟暂时休息，似乎不要还没用
+            print('*'*11,'休息9秒')
+            #time.sleep(9)
+            
+        if sco>qq:                              #从图片识别当前分数，超过目标分数时自杀
+            updown(t_=1211)
+            time.sleep(3)
+            
+            pull_screenshot()
+            img0=cv2.imread('autojump.png',0)
+            res = cv2.matchTemplate(img0,ky,cv2.TM_CCOEFF_NORMED)
+            min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+            cv2.imwrite(name,img0)
+            if max_val>0.95:                        #判定没作弊才增加目标分数
+                print('>'*55,'作弊认定，目标不变')
+                os.remove(name)
+                return 0,1
+            print('='*55,'成功，目标增加')
+            return 0,0
 
 
-x=0
-step=0
-onpu =cv2.imread('konpu.jpg',0)
+x=0                                         #流程判断的初始值
+qq=200                                      #目标分数
+onpu =cv2.imread('konpu.jpg',0)             #这里依次是音符1，音符2，再玩一次，可疑操作的截图
 onpu1 =cv2.imread('konpu1.jpg',0)
 aga=cv2.imread('kagain.jpg',0)
+ky=cv2.imread('ky.jpg',0)
+
 while 1:
-    print('x=',x)
-    if not x:
+    print('x=',x,'qq=',qq)
+    if x==0:
         time.sleep(3)
         x=1
-        s='adb shell input tap 500 1050'
-        os.system(s)
-    time.sleep(2)                    #防止main里截图过快导致图片错误
-    x=main()
+        updown(x1=500,x2=1050)
+    time.sleep(2)
+    if x==1:
+        x,y=main(qq)
+        
+        if y==0:
+            qq+=50
 
 
