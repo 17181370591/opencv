@@ -103,9 +103,15 @@ def getkomapic(koma='koma.jpg'):
     thresh = cv2.imread(koma,0)
     ret,thresh1 = cv2.threshold(thresh,100,255,0)
     thresh1=cv2.bitwise_not(thresh1)
+    
+    image, contours, hierarchy = cv2.findContours(thresh1,0,cv2.CHAIN_APPROX_NONE)
+    thresh1=cv2.drawContours(thresh1, contours, -1,255,-1)
+    #以前用下三行代码，其实取外边轮廓用上面两行要好很多
+    '''
     image, contours, hierarchy = cv2.findContours(thresh1,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
     thresh1=cv2.drawContours(thresh1, contours, 0,255,-1)
     thresh1=cv2.drawContours(thresh1, contours, 2,255,-1)
+    '''
     thresh1=np.uint8(thresh1/255)
     z=im*thresh1[:,:,None]
     cv2.imwrite('koma1.jpg',z)
