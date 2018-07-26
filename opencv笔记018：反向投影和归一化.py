@@ -82,6 +82,7 @@ plt.show()
 >>> a=np.array([[0,0],[1,2],[2,3]])
 >>> b=np.zeros_like(a)
 >>> c=cv2.normalize(a,b,0,255,cv2.NORM_MINMAX)
+#可以直接c=cv2.normalize(a,a,0,255,cv2.NORM_MINMAX)
 >>> a
 array([[0, 0],
        [1, 2],
